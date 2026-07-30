@@ -106,14 +106,21 @@
            
     <div class="job">
     <h3><a href="https://www.tinkercad.com/things/byI7gTvqzmj-robo-car-v2?sharecode=I85XAmAJHJ7otjE3MGbRHG4YcUUYXcfc_Lf1LKlDwmE" target="_blank">Autonomous Robot Car — v1 → v2</a></h3>
-    <p><strong>v1:</strong> Built a Wi-Fi-controlled robotic vehicle with a <strong>FastAPI</strong> server on a
-    <strong>Raspberry Pi</strong> handling asynchronous web requests and relaying serial commands to an
-    <strong>Arduino</strong> for L298N motor control and differential steering.</p>
-    <p><strong>v2:</strong> Re-architected the control stack around an <strong>ESP32</strong> and
-    <strong>Raspberry Pi Zero</strong> after profiling revealed [X ms of command latency / excessive power draw]
-    in the Pi&rarr;Arduino serial path. Moved the real-time motor loop onto the ESP32's
-    <strong>FreeRTOS</strong> tasks, reserving the Pi Zero for high-level planning — cutting
-    [latency / footprint / power] by [N]% and separating hard-real-time control from best-effort compute.</p>
+    <p><strong>v1 — Networked teleop:</strong> Wi-Fi rover with a <strong>FastAPI</strong> server on a
+    Raspberry Pi relaying serial commands to an Arduino driving an L298N in differential steering.
+    Exposed the core problem: a non-deterministic Linux scheduler sat in the motor-command path.</p>
+
+    <p><strong>v2 — Real-time partitioning:</strong> Re-architected around an <strong>ESP32</strong> +
+    Pi Zero, moving the motor loop onto <strong>FreeRTOS</strong> tasks with deterministic timing and
+    reserving Linux for best-effort compute — the flight-controller/companion-computer split used in
+    production robotics.</p>
+
+    <p><strong>v3 — Perception and power scale-up:</strong> Rebuilt on a <strong>Raspberry Pi 5</strong>
+    running <strong>ROS 2</strong>, with an <strong>LD19 360° LiDAR</strong> and <strong>VL53L0X</strong>
+    ToF sensors for obstacle detection, DualShock teleop over <code>joy</code>&rarr;<code>cmd_vel</code>,
+    and a <strong>Cytron MDD20A</strong> (20 A/channel, 6–30 V) driven by ESP32 PWM/DIR off
+    <strong>M18 18 V</strong> packs. Required designing power distribution, fusing, undervoltage
+    cutoff, and a hardware E-stop for a platform with ~40× the drive current of v1.</p>
 </div>
 
 
